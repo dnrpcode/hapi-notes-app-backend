@@ -1,0 +1,436 @@
+{
+	"info": {
+		"_postman_id": "702bdb0d-e813-4160-a846-2c88788ad45a",
+		"name": "Notes API",
+		"description": "# 🚀 Get started here\n\nThis template guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests.\n\n## 🔖 **How to use this template**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these [request](https://learning.postman.com/docs/sending-requests/requests/) types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT request.\n\n```\n{\n    \"name\": \"Add your name in the body\"\n}\n\n ```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a [variable](https://learning.postman.com/docs/sending-requests/variables/) called `base_url` with the sample request [https://postman-api-learner.glitch.me](https://postman-api-learner.glitch.me). Replace it with your API endpoint to customize this collection.\n\n#### **Step 5: Add tests in the \"Tests\" tab**\n\nTests help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/b5f280a7-4b09-48ec-857f-0a7ed99d7ef8/U2NyZWVuc2hvdCAyMDIzLTAzLTI3IGF0IDkuNDcuMjggUE0ucG5n\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n- Add more [scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/) in \"Tests\" to verify if the API works as expected and execute workflows.\n    \n\n## 💡Related templates\n\n[API testing basics](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9a37a28-055b-49cd-8c7e-97494a21eb54&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[API documentation](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9c28f47-1253-44af-a2f3-20dce4da1f18&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[Authorization methods](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=31a9a6ed-4cdf-4ced-984c-d12c9aec1c27&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25237093"
+	},
+	"item": [
+		{
+			"name": "Adding Note",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 201 value', () => {",
+							"   pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test('response Content-Type header should have application/json value', () => {",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');",
+							"});",
+							"",
+							"pm.test('response body should an object', () => {",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an('object');",
+							"});",
+							"",
+							"pm.test('response body should have correct property and value', () => {",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.ownProperty('status');",
+							"    pm.expect(responseJson.status).to.equals('success');",
+							"    pm.expect(responseJson).to.ownProperty('message');",
+							"    pm.expect(responseJson.message).to.equals('Catatan berhasil ditambahkan');",
+							"    pm.expect(responseJson).to.ownProperty('data');",
+							"    pm.expect(responseJson.data).to.be.an('object');",
+							"});",
+							"",
+							"pm.test('response body data should have noteId property and not equal to empty', () => {",
+							"    const responseJson = pm.response.json();",
+							"    const { data } = responseJson;",
+							" ",
+							"    pm.expect(data).to.ownProperty('noteId');",
+							"    pm.expect(data.noteId).to.not.equals('');",
+							"",
+							"    pm.environment.set('noteId', data.noteId);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Catatan A\",\n    \"tags\": [\"Android\", \"Web\"],\n    \"body\": \"Isi dari catatan A\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/notes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"notes"
+					],
+					"query": [
+						{
+							"key": "lang",
+							"value": "id",
+							"disabled": true
+						}
+					]
+				},
+				"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+			},
+			"response": []
+		},
+		{
+			"name": "Getting All Note",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 200 value', () => {",
+							"   pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test('response Content-Type header should have application/json value', () => {",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');",
+							"});",
+							"",
+							"pm.test('response body should an object', () => {",
+							"   const responseJson = pm.response.json();",
+							"   pm.expect(responseJson).to.be.an('object');",
+							"});",
+							"",
+							"pm.test('response body should have the correct property and value', () => {",
+							"  const responseJson = pm.response.json();",
+							"   pm.expect(responseJson).to.have.ownProperty('status');",
+							"   pm.expect(responseJson.status).to.equals('success');",
+							"   pm.expect(responseJson).to.have.ownProperty('data');",
+							"   pm.expect(responseJson.data).to.be.an('object');",
+							"});",
+							"",
+							"pm.test('response body data should have a notes array and contain at least 1 item', () => {",
+							"   const responseJson = pm.response.json();",
+							"   const { data } = responseJson;",
+							" ",
+							"   pm.expect(data).to.have.ownProperty('notes');",
+							"   pm.expect(data.notes).to.be.an('array');",
+							"   pm.expect(data.notes).lengthOf.at.least(1);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/notes",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"notes"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Getting Specified Note",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 200 value', () => {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test('response Content-Type header should have application/json value', () => {",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');",
+							"});",
+							"",
+							"pm.test('response body should be an object', () => {",
+							"   const responseJson = pm.response.json();",
+							"   pm.expect(responseJson).to.be.an('object');",
+							"});",
+							"",
+							"pm.test('response body should have the correct property and value', () => {",
+							"   const responseJson = pm.response.json();",
+							" ",
+							"   pm.expect(responseJson).to.have.ownProperty('status');",
+							"   pm.expect(responseJson.status).to.equals('success');",
+							"   pm.expect(responseJson).to.have.ownProperty('data');",
+							"   pm.expect(responseJson.data).to.be.an('object');",
+							"});",
+							"",
+							"pm.test('response body data should contain note object', () => {",
+							"   const responseJson = pm.response.json();",
+							"   const { data } = responseJson;",
+							" ",
+							"   pm.expect(data).to.have.ownProperty('note');",
+							"   pm.expect(data.note).to.be.an('object');",
+							"});",
+							"",
+							"pm.test('note object should contain correct value for id, title, body, and tags property', () => {",
+							"   const responseJson = pm.response.json();",
+							"   const { data: { note } } = responseJson;",
+							"   ",
+							"   const expectedId = pm.environment.get('noteId');",
+							"   const expectedTitle = 'Catatan A';",
+							"   const expectedTags = ['Android', 'Web'];",
+							"   const expectedBody = 'Isi dari catatan A';",
+							"",
+							"   pm.expect(note).to.have.ownProperty('id');",
+							"   pm.expect(note.id).to.equals(expectedId);",
+							"   pm.expect(note).to.have.ownProperty('title');",
+							"   pm.expect(note.title).to.equals(expectedTitle);",
+							"   pm.expect(note).to.have.ownProperty('tags');",
+							"   pm.expect(note.tags).to.eql(expectedTags);",
+							"   pm.expect(note).to.have.ownProperty('body');",
+							"   pm.expect(note.body).to.equals(expectedBody);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/notes/{{noteId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"notes",
+						"{{noteId}}"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Update Note",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 200 value', () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test('response Content-Type header should have application/json value', () => {",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.equals(\"application/json; charset=utf-8\");",
+							"});",
+							"",
+							"pm.test('response body should be an object', () => {",
+							"   const responseJson = pm.response.json();",
+							"   pm.expect(responseJson).to.be.an('object');",
+							"});",
+							"",
+							"pm.test('response body should have correct property and value', () => {",
+							"   const responseJson = pm.response.json();",
+							" ",
+							"   pm.expect(responseJson).to.have.ownProperty('status');",
+							"   pm.expect(responseJson.status).to.equals('success');",
+							"   pm.expect(responseJson).to.have.ownProperty('message');",
+							"   pm.expect(responseJson.message).to.equals('Catatan berhasil diperbarui');",
+							"});",
+							"",
+							"pm.test('when request the updated note', () => {",
+							"    const noteId = pm.environment.get('noteId');",
+							"    pm.sendRequest(`http://localhost:5000/notes/${noteId}`, (error, response) => {",
+							"        if(!error) {",
+							"            pm.test('then the updated note should contain the latest data', () => {",
+							"                const responseJson = response.json();",
+							"                const { data: { note } } = responseJson;",
+							" ",
+							"                const expectedTitle = 'Catatan A Revised';",
+							"                const expectedTags = ['Android', 'Web'];",
+							"                const expectedBody = 'Isi dari Catatan A Revised';",
+							" ",
+							"                pm.expect(note.title).to.equals(expectedTitle);",
+							"                pm.expect(note.tags).to.eql(expectedTags);",
+							"                pm.expect(note.body).to.equals(expectedBody);",
+							"            });",
+							"        }",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Catatan A Revised\",\n    \"tags\": [\n        \"Android\",\n        \"Web\"\n    ],\n    \"body\": \"Isi dari Catatan A Revised\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/notes/{{noteId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"notes",
+						"{{noteId}}"
+					]
+				},
+				"description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Note",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 200 value', () => {",
+							"   pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test('response Content-Type header should have application/json value', () => {",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8')",
+							"});",
+							"",
+							"pm.test('response body should be an object', () => {",
+							"   const responseJson = pm.response.json();",
+							"   pm.expect(responseJson).to.be.an('object');",
+							"});",
+							"",
+							"pm.test('response body should have correct property and value', () => {",
+							"   const responseJson = pm.response.json();",
+							" ",
+							"   pm.expect(responseJson).to.have.ownProperty('status');",
+							"   pm.expect(responseJson.status).to.equals('success');",
+							"   pm.expect(responseJson).to.have.ownProperty('message');",
+							"   pm.expect(responseJson.message).to.equals('Catatan berhasil dihapus');",
+							"});",
+							"",
+							"pm.test('when request the deleted note', () => {",
+							"    const noteId = pm.environment.get('noteId');",
+							"    pm.sendRequest(`http://localhost:5000/notes/${noteId}`, (error, response) => {",
+							"        if(!error) {",
+							"            pm.test('the deleted note should be not found', () => {",
+							"                pm.expect(response.code).to.equals(404);",
+							"                const responseJson = response.json();",
+							"                pm.expect(responseJson.status).to.equals('fail');",
+							"                pm.expect(responseJson.message).to.equals('Catatan tidak ditemukan');",
+							"            });",
+							"        }",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/notes/{{noteId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"notes",
+						"{{noteId}}"
+					]
+				},
+				"description": "This is a DELETE request, and it is used to delete data that was previously created via a POST request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful DELETE request typically returns a `200 OK`, `202 Accepted`, or `204 No Content` response code."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "id",
+			"value": "1"
+		},
+		{
+			"key": "base_url",
+			"value": "https://postman-rest-api-learner.glitch.me/"
+		}
+	]
+}
